@@ -27,7 +27,8 @@ left_col, right_col = st.columns([1, 2])
 
 with left_col:
     st.subheader("📁 Upload Reviews")
-    # upload section
+
+# upload section
     uploaded_file = st.file_uploader(
         label='Uploaded a CSV file of reviews',
         type=['csv']
@@ -42,9 +43,25 @@ with left_col:
 with right_col:
     st.subheader("📈 Results")
 
-    # upload section
+# upload section
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)    
+
+# Adding Sentiment Cards
+        st.write('**Sentiment Overview:**')
+        card1, card2, card3 = st.columns(3)
+
+        with card1:
+            st.success('🟢 Positive\n\n### 120 reviews')
+
+        with card2:
+            st.error('🔴 Negative\n\n### 45 reviews')
+
+        with card3:
+            st.warning('🟡 Neutral\n\n### 35 reviews')
+
+# Data Preview
+        st.write('---')
         st.write('**Preview of your data:**')
         st.dataframe(df.head(10))
     else:
