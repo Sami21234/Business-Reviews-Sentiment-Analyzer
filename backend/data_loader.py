@@ -1,5 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("../data/amazon.csv")
+def load_data():
+    df = pd.read_csv("../data/amazon.csv")
+    return df
 
-print(df.info())

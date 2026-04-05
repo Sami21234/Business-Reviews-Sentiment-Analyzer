@@ -1,5 +1,5 @@
-from .preprocess import df
-import pandas as pd
+# from .preprocess import df
+# import pandas as pd
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 
@@ -26,13 +26,13 @@ def categorize_sentiment(score):
     else:
         return "Neutral"
     
-df['sentiment_score'] = df['cleaned_content'].apply(get_sentiment_score)
-df['sentiment_type'] = df['sentiment_score'].apply(categorize_sentiment)
+# df['sentiment_score'] = df['cleaned_content'].apply(get_sentiment_score)
+# df['sentiment_type'] = df['sentiment_score'].apply(categorize_sentiment)
 
-# 5. Review results 
-print(df[['cleaned_content', 'sentiment_score', 'sentiment_type']].head())
+# # 5. Review results 
+# print(df[['cleaned_content', 'sentiment_score', 'sentiment_type']].head())
 
-# Optional: Get a quick count of your sentiment distribution
-print("\n--- Sentiment Counts ---")
-print(df['sentiment_type'].value_counts())
+# # Optional: Get a quick count of your sentiment distribution
+# print("\n--- Sentiment Counts ---")
+# print(df['sentiment_type'].value_counts())
 
