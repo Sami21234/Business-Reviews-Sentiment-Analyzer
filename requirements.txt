@@ -1,4 +1,9 @@
-NLTK
-Pandas
-Scikit-learn
+streamlit
+pandas
+nltk
+scikit-learn
+matplotlib
+plotly
+requests
+beautifulsoup4
 kaggle
