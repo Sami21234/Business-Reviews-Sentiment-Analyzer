@@ -1,4 +1,8 @@
-NLTK
-Pandas
-Scikit-learn
-kaggle
+streamlit
+pandas
+scikit-learn
+joblib
+plotly
+flask
+flask-cors
+nltk
