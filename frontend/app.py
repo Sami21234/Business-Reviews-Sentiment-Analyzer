@@ -474,19 +474,27 @@ else:
 
 
         # Button
+        BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # go to project root
+        file_path = os.path.join(BASE_DIR, "data", "customer_email.txt")
         email = st.text_input("Enter email to send report")
+        if st.button("Save Email"):
+            with open(file_path, "w") as f:
+                f.write(email)
+            st.success("Email saved successfully!")
+        else:
+            st.warning("please enter an email address")    
 
-        if st.button("📧 Generate & Send Report"):
-            report = generate_report(df)
+        # if st.button("📧 Generate & Send Report"):
+        #     report = generate_report(df)
 
-            st.success("Report Generated!")
-            st.text_area("Preview Report", report, height=300)
+        #     st.success("Report Generated!")
+        #     st.text_area("Preview Report", report, height=300)
 
-            if email:
-                send_email(report, email)
-                st.success("✅ Email sent successfully!")
-            else:
-                st.warning("Please enter an email address")
+        #     if email:
+        #         send_email(report, email)
+        #         st.success("✅ Email sent successfully!")
+        #     else:
+        #         st.warning("Please enter an email address")
             # ---------------- FILTER TOGGLES ----------------        # <-- NEW (Place 3)
             st.write("### 🔍 Filter Reviews")
 

@@ -1,53 +1,41 @@
+# report_scheduler.py
 import schedule
 import time
-import pandas as pd
-
 from email_utils import send_email
-from pdf_utils import create_pdf
-from llm_summary import generate_llm_summary
-import joblib
+import os
 
-# Load model
-model = joblib.load("../backend/model/sentiment_model.pkl")
-vectorizer = joblib.load("../backend/model/vectorizer.pkl")
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+file_path = os.path.join(BASE_DIR, "data", "customer_email.txt")
+
+# Dummy report generator (replace with your real function)
+def generate_report():
+    report = "📊 Daily Business Report\n\nSales: 120\nRevenue: $5000"
+    return report
+
 
 def job():
-    print("⏳ Running scheduled job...")
+    try:
+        # Read email from file
+        with open(file_path, "r") as f:
+            to_email = f.read().strip()
 
-    # Load your dataset
-    df = pd.read_csv("data/reviews.csv")   # use ORIGINAL reviews
+        if not to_email:
+            print("No email found.")
+            return
 
-    review_column = "review"  # change if needed
+        report = generate_report()
 
-    # Predict sentiment
-    vectors = vectorizer.transform(df[review_column].astype(str))
-    df["Predicted Sentiment"] = model.predict(vectors)
+        send_email(report, to_email)
+        print(f"Email sent to {to_email}")
 
-    # Generate report
-    neg_reviews = df[df["Predicted Sentiment"] == "negative"][review_column].head(10)
-    text = " ".join(neg_reviews.astype(str))
+    except Exception as e:
+        print("Error:", e)
 
-    llm_summary = generate_llm_summary(text)
 
-    report = f"""
-Scheduled Report
+# ⏰ Schedule time (24-hour format)
+schedule.every().day.at("21:19").do(job)   # Change time here
 
-Negative Reviews Summary:
-{llm_summary}
-"""
-
-    # Create PDF
-    pdf_path = create_pdf(report)
-
-    # Send email
-    send_email(report, "your_email@gmail.com", pdf_path)
-
-    print("✅ Report sent!")
-
-# Schedule
-schedule.every().day.at("10:00").do(job)
-
-print("🚀 Scheduler started...")
+print("Scheduler started...")
 
 while True:
     schedule.run_pending()

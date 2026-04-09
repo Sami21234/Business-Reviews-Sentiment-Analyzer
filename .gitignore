@@ -46,7 +46,7 @@ dist/
 
 
 #new features but not completed files added to gitignore to push working version to github
-backend/report_scheduler.py
+
 backend/report_generator.py
 backend/pdf_utils.py
 backend/llm_summary.py
