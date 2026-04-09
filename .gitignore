@@ -10,11 +10,11 @@ venv/
 *.env
 
 # Data files (large datasets, temporary outputs)
-data/
-# *.csv
-*.tsv
-*.json
-*.xlsx
+# data/
+# # *.csv
+# *.tsv
+# *.json
+# *.xlsx
 
 # Logs and debug
 *.log
