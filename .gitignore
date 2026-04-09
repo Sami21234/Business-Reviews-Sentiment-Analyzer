@@ -11,7 +11,7 @@ venv/
 
 # Data files (large datasets, temporary outputs)
 data/
-*.csv
+# *.csv
 *.tsv
 *.json
 *.xlsx
