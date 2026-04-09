@@ -204,6 +204,16 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import joblib
+import sys
+import os
+
+# Add project root to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from backend.email_utils import send_email
+
+
+
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
@@ -382,6 +392,101 @@ else:
                 )
                 st.plotly_chart(bar_chart, use_container_width=True)
 
+    # # ---------------- REPORT GENERATION ----------------
+    # st.write("### 📄 Generate Report")
+    # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+    # from backend.llm_summary import generate_llm_summary
+    # from backend.email_utils import send_email
+    # from backend.pdf_utils import create_pdf
+    
+    # email = st.text_input("Enter email to send report")
+
+    # if st.button("📧 Generate & Send Report"):
+
+    #     # ✅ STEP 1: CREATE REPORT FIRST
+    #     report = generate_report(df)
+
+    #     # ✅ STEP 2: Prepare reviews for LLM
+    #     neg_reviews = df[df["Predicted Sentiment"] == "negative"][review_column].head(10)
+    #     pos_reviews = df[df["Predicted Sentiment"] == "positive"][review_column].head(5)
+
+    #     sample_reviews = pd.concat([neg_reviews, pos_reviews])
+    #     all_reviews_text = " ".join(sample_reviews.astype(str).tolist())
+
+    #     # ✅ STEP 3: LLM summary
+    #     with st.spinner("🤖 Generating AI insights..."):
+    #         llm_summary = generate_llm_summary(all_reviews_text)
+
+    #     report += f"\n\n🤖 AI Insights:\n{llm_summary}"
+
+    #     # ✅ STEP 4: SHOW REPORT
+    #     st.success("Report Generated!")
+    #     st.text_area("Preview Report", report, height=300)
+
+    #     # ✅ STEP 5: CREATE PDF
+    #     pdf_file = create_pdf(report)
+
+    #     # ✅ STEP 6: DOWNLOAD BUTTON
+    #     with open(pdf_file, "rb") as f:
+    #         st.download_button(
+    #             "📎 Download PDF Report",
+    #             f,
+    #             file_name="report.pdf"
+    #         )
+
+    #     # ✅ STEP 7: SEND EMAIL
+    #     if email:
+    #         send_email(report, email, pdf_file)
+    #         st.success("✅ Email sent successfully!")
+    #     else:
+    #         st.warning("Please enter an email address")
+
+            # ---------------- REPORT GENERATION ----------------
+        st.write("### 📄 Generate Report")
+
+        def generate_report(df):
+            total = len(df)
+            pos = (df["Predicted Sentiment"] == "positive").sum()
+            neu = (df["Predicted Sentiment"] == "neutral").sum()
+            neg = (df["Predicted Sentiment"] == "negative").sum()
+
+            # Top negative reviews
+            top_neg = df[df["Predicted Sentiment"] == "negative"] \
+                        .head(5)[review_column].tolist()
+
+            report = f"""
+        📊 Business Review Summary
+
+        Total Reviews: {total}
+
+        🟢 Positive: {pos} ({(pos/total)*100:.1f}%)
+        🟡 Neutral: {neu} ({(neu/total)*100:.1f}%)
+        🔴 Negative: {neg} ({(neg/total)*100:.1f}%)
+
+        ⚠️ Top Negative Reviews:
+        """
+
+            for i, review in enumerate(top_neg, 1):
+                report += f"\n{i}. {review}"
+
+            return report
+
+
+        # Button
+        email = st.text_input("Enter email to send report")
+
+        if st.button("📧 Generate & Send Report"):
+            report = generate_report(df)
+
+            st.success("Report Generated!")
+            st.text_area("Preview Report", report, height=300)
+
+            if email:
+                send_email(report, email)
+                st.success("✅ Email sent successfully!")
+            else:
+                st.warning("Please enter an email address")
             # ---------------- FILTER TOGGLES ----------------        # <-- NEW (Place 3)
             st.write("### 🔍 Filter Reviews")
 
@@ -394,6 +499,8 @@ else:
             filtered_df = df[df["Predicted Sentiment"].isin(selected_sentiments)]
 
             st.write(f"Showing **{len(filtered_df)}** of **{len(df)}** reviews")
+
+                 
 
             # ---------------- HIGHLIGHTED TABLE ----------------        # <-- NEW (Place 4)
             st.write("### Results Table")
